@@ -1,7 +1,7 @@
 # Do not change version. This is the version of aws buildspec, not the version of your buldspec file.
 version: 0.2
-env:
-  parameter-store:
+#env:
+  #parameter-store:
     #Login: sonartoken
     #Host: Host
     #Username: username
@@ -20,7 +20,7 @@ phases:
     commands:
       - echo Installing source NPM dependencies...
       - npm install
-      - npm install
+      #- npm install
       #- npm install -g snyk
       #- snyk test 
       #- snyk monitor
