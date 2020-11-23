@@ -42,7 +42,7 @@ phases:
             echo "SonarQube task ${TASKID} failed";
             exit 1;
           fi
-      - sleep $waittime
+      - sleep 5
       - TASKSTATUS=`curl ${TASKSTATUS_URI} | jq -r ".task.status"`;
           echo "SonarQube analysis status is ${TASKSTATUS}";
         done
