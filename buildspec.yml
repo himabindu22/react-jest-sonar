@@ -31,4 +31,49 @@ phases:
       #- aws s3 cp s3://$bucket/sonar-project.properties . 
       #- chmod +x sonar-project.properties  
  
-      - sonar-scanner -Dsonar.host.url=http://3.80.230.191:9000 -Dsonar.login=89ca1c5f689fa9c51d1c94fa205468ec3471227f
+      - sonar-scanner -Dsonar.host.url=http://54.226.221.186:9000 -Dsonar.login=89ca1c5f689fa9c51d1c94fa205468ec3471227f
+      - TASKID=`grep ceTaskId coverage/lcov.info/report-task.txt | sed s/ceTaskId=//`
+      - "echo \"SonarQube Task Id: ${TASKID}\""
+      - TASKSTATUS_URI=`grep ceTaskUrl coverage/lcov.info/report-task.txt | sed s/ceTaskUrl=//`
+      - |
+        TASKSTATUS="PENDING";
+        while [ "${TASKSTATUS}" != "SUCCESS" ]; do
+          if [ "${TASKSTATUS}" = "FAILED" ] || [ "{$TASKSTATUS}" = "CANCELLED" ]; then
+            echo "SonarQube task ${TASKID} failed";
+            exit 1;
+          fi
+      - sleep $waittime
+      - TASKSTATUS=`curl ${TASKSTATUS_URI} | jq -r ".task.status"`;
+          echo "SonarQube analysis status is ${TASKSTATUS}";
+        done
+      - ANALYSISID=`curl ${TASKSTATUS_URI} | jq -r ".task.analysisId"`
+      - QUALITYSTATUS=`curl -u $Username:$Password $Host/api/qualitygates/project_status\?analysisId=${ANALYSISID} | jq -r ".projectStatus.status"`
+      - |
+        if [ "${QUALITYSTATUS}" = "OK" ]; then
+          echo "SonarQube analysis complete. Quality Gate Passed.";
+          exit 0;
+        elif [ "${QUALITYSTATUS}" = "ERROR" ]; then
+          echo "SonarQube analysis complete. Quality Gate Failed.";
+          exit 1;
+        else
+          echo "An unexpected error occurred while attempting to analyze with SonarQube.";
+          exit 1;
+        fi      
+
+ 
+
+
+      #- curl -u $Username:$Password $Host/api/qualitygates/project_status?projectKey=$sonarproject >result.json
+      #- cat result.json
+      #- OUTPUT="$(jq -r '.projectStatus.status' result.json)"
+      #- echo $OUTPUT
+      #- |
+       # if [ "$OUTPUT" != "OK" ] ;
+        #then
+        #{
+         #echo "Build failed due to SonarQube quality gate failure";
+         #exit 1;
+         #}
+        #fi
+
+ 
