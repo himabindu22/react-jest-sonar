@@ -32,9 +32,9 @@ phases:
       #- chmod +x sonar-project.properties  
  
       - sonar-scanner -Dsonar.host.url=http://54.226.221.186:9000 -Dsonar.login=89ca1c5f689fa9c51d1c94fa205468ec3471227f
-      - TASKID=`grep ceTaskId coverage/lcov.info/report-task.txt | sed s/ceTaskId=//`
+      - TASKID=`grep ceTaskId coverage/lcov.info | sed s/ceTaskId=//`
       - "echo \"SonarQube Task Id: ${TASKID}\""
-      - TASKSTATUS_URI=`grep ceTaskUrl coverage/lcov.info/report-task.txt | sed s/ceTaskUrl=//`
+      - TASKSTATUS_URI=`grep ceTaskUrl coverage/lcov.info | sed s/ceTaskUrl=//`
       - |
         TASKSTATUS="PENDING";
         while [ "${TASKSTATUS}" != "SUCCESS" ]; do
