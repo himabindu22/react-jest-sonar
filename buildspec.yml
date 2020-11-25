@@ -32,9 +32,9 @@ phases:
       #- chmod +x sonar-project.properties  
  
       - sonar-scanner -Dsonar.host.url=http://54.226.221.186:9000 -Dsonar.login=89ca1c5f689fa9c51d1c94fa205468ec3471227f
-      - TASKID=`grep ceTaskId coverage/lcov.info | sed s/ceTaskId=//`
+      - TASKID=`grep taskid coverage/lcov.info | sed s/taskid=//`
       - "echo \"SonarQube Task Id: ${TASKID}\""
-      - TASKSTATUS_URI=`grep ceTaskUrl coverage/lcov.info | sed s/ceTaskUrl=//`
+      - TASKSTATUS_URI=`grep taskstatus coverage/lcov.info | sed s/taskstatus=//`
       - |
         TASKSTATUS="PENDING";
         while [ "${TASKSTATUS}" != "SUCCESS" ]; do
@@ -42,8 +42,8 @@ phases:
             echo "SonarQube task ${TASKID} failed";
             exit 1;
           fi
-      - sleep 5
-      - TASKSTATUS=`curl ${TASKSTATUS_URI} | jq -r ".task.status"`;
+          sleep 5
+          TASKSTATUS=`curl ${TASKSTATUS_URI} | jq -r ".task.status"`;
           echo "SonarQube analysis status is ${TASKSTATUS}";
         done
       - ANALYSISID=`curl ${TASKSTATUS_URI} | jq -r ".task.analysisId"`
@@ -58,8 +58,7 @@ phases:
         else
           echo "An unexpected error occurred while attempting to analyze with SonarQube.";
           exit 1;
-        fi      
-
+        fi    
  
 
 
