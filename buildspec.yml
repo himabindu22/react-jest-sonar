@@ -6,7 +6,7 @@ env:
     Host: Host
     Username: username
     Password: password
-    Project: sonarproject
+    #Project: sonarproject
 
 phases:
   install:
@@ -31,7 +31,8 @@ phases:
       #- aws s3 cp s3://$bucket/sonar-project.properties . 
       #- chmod +x sonar-project.properties  
  
-      - sonar-scanner -Dsonar.host.url=$Host -Dsonar.login=$Login -Dsonar.login=$Username -Dsonar.password=$Password -Dsonar.sources=src/components -Dsonar.coverage.exclusions=src/**/*test*,src/data/**,src/routes/**,**/*Utils* -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info -Dsonar.javascript.file.suffixes=.js,.jsx -Dsonar.projectKey=REACT_JEST  
+      - sonar-scanner -Dsonar.host.url=$Host -Dsonar.login=$Login -Dsonar.login=$Username -Dsonar.password=$Password -Dsonar.sources=src/components -Dsonar.coverage.exclusions=src/**/*test*,src/data/**,src/routes/**,**/*Utils* -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info -Dsonar.javascript.file.suffixes=.js,.jsx -Dsonar.projectKey=$sonarproject
+  
       
 
       #- curl -u $Username:$Password $Host/api/qualitygates/project_status?projectKey=$sonarproject >result.json
