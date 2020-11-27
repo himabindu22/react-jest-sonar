@@ -31,7 +31,7 @@ phases:
       #- aws s3 cp s3://$bucket/sonar-project.properties . 
       #- chmod +x sonar-project.properties  
  
-      - sonar-scanner -Dsonar.host.url=http://54.163.208.33:9000 -Dsonar.login=b888e540f36758e6bbe374f3fdf326404894f5e4 -Dsonar.sources=src/components -Dsonar.coverage.exclusions=src/**/*test*,src/data/**,src/routes/**,**/*Utils* -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info -Dsonar.javascript.file.suffixes=.js,.jsx -Dsonar.projectKey=REACT_JEST -Dsonar.projectName=React Jest Sonar
+      - sonar-scanner -Dsonar.host.url=http://54.163.208.33:9000 -Dsonar.login=b888e540f36758e6bbe374f3fdf326404894f5e4 -Dsonar.sources=src/components -Dsonar.coverage.exclusions=src/**/*test*,src/data/**,src/routes/**,**/*Utils* -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info -Dsonar.javascript.file.suffixes=.js,.jsx -Dsonar.projectKey=React Jest Sonar 
       - TASKID=`grep taskid coverage/lcov.info | sed s/taskid=//`
       - "echo \"SonarQube Task Id: ${TASKID}\""
       - TASKSTATUS_URI=`grep taskstatus coverage/lcov.info | sed s/taskstatus=//`
