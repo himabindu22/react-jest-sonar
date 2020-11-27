@@ -1,12 +1,12 @@
 # Do not change version. This is the version of aws buildspec, not the version of your buldspec file.
 version: 0.2
-#env:
-  #parameter-store:
-    #Login: sonartoken
-    #Host: Host
-    #Username: username
-    #Password: password
-    #Project: sonarproject
+env:
+  parameter-store:
+    Login: sonartoken
+    Host: Host
+    Username: username
+    Password: password
+    Project: sonarproject
 
 phases:
   install:
@@ -31,36 +31,8 @@ phases:
       #- aws s3 cp s3://$bucket/sonar-project.properties . 
       #- chmod +x sonar-project.properties  
  
-      - sonar-scanner -Dsonar.host.url=http://54.163.208.33:9000 -Dsonar.login=b888e540f36758e6bbe374f3fdf326404894f5e4 -Dsonar.sources=src/components -Dsonar.coverage.exclusions=src/**/*test*,src/data/**,src/routes/**,**/*Utils* -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info -Dsonar.javascript.file.suffixes=.js,.jsx -Dsonar.projectKey=REACT_JEST  
-      - TASKID=`grep taskid coverage/lcov.info | sed s/taskid=//`
-      - "echo \"SonarQube Task Id: ${TASKID}\""
-      - TASKSTATUS_URI=`grep taskstatus coverage/lcov.info | sed s/taskstatus=//`
-      - |
-        TASKSTATUS="PENDING";
-        while [ "${TASKSTATUS}" != "SUCCESS" ]; do
-          if [ "${TASKSTATUS}" = "FAILED" ] || [ "{$TASKSTATUS}" = "CANCELLED" ]; then
-            echo "SonarQube task ${TASKID} failed";
-            exit 1;
-          fi
-          sleep 5
-          TASKSTATUS=`curl ${TASKSTATUS_URI} | jq -r ".task.status"`;
-          echo "SonarQube analysis status is ${TASKSTATUS}";
-        done
-      - ANALYSISID=`curl ${TASKSTATUS_URI} | jq -r ".task.analysisId"`
-      - QUALITYSTATUS=`curl -u $Username:$Password $Host/api/qualitygates/project_status\?analysisId=${ANALYSISID} | jq -r ".projectStatus.status"`
-      - |
-        if [ "${QUALITYSTATUS}" = "OK" ]; then
-          echo "SonarQube analysis complete. Quality Gate Passed.";
-          exit 0;
-        elif [ "${QUALITYSTATUS}" = "ERROR" ]; then
-          echo "SonarQube analysis complete. Quality Gate Failed.";
-          exit 1;
-        else
-          echo "An unexpected error occurred while attempting to analyze with SonarQube.";
-          exit 1;
-        fi    
- 
-
+      - sonar-scanner -Dsonar.host.url=$Host -Dsonar.login=$Login -Dsonar.login=$Username -Dsonar.password=$Password -Dsonar.sources=src/components -Dsonar.coverage.exclusions=src/**/*test*,src/data/**,src/routes/**,**/*Utils* -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info -Dsonar.javascript.file.suffixes=.js,.jsx -Dsonar.projectKey=REACT_JEST  
+      
 
       #- curl -u $Username:$Password $Host/api/qualitygates/project_status?projectKey=$sonarproject >result.json
       #- cat result.json
